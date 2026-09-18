@@ -5,19 +5,28 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle2, HelpCircle, MapPin, Users, IndianRupee, FileText, Scale, Shield, ArrowRight, FolderOpen } from "lucide-react";
+import { ArrowLeft, CheckCircle2, HelpCircle, MapPin, Users, IndianRupee, FileText, Scale, Shield, ArrowRight, FolderOpen, Loader2 } from "lucide-react";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { PageLoader } from "@/components/PageLoader";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
+import { useSession } from "next-auth/react";
 
 export default function CaseOverview() {
+  const { status } = useSession();
   const params = useParams();
   const router = useRouter();
   const [caseData, setCaseData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
     const fetchCase = async () => {
       try {
         const res = await fetch(`/api/cases/${params.id}`);
@@ -32,7 +41,15 @@ export default function CaseOverview() {
       }
     };
     fetchCase();
-  }, [params.id]);
+  }, [params.id, status]);
+
+  if (status === "loading" || status === "unauthenticated") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        <Loader2 className="w-8 h-8 animate-spin text-white/50" />
+      </div>
+    );
+  }
 
   if (loading) {
     return <PageLoader />;

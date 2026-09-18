@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -9,11 +9,27 @@ import { ArrowLeft, Upload, Loader2 } from "lucide-react";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
+import { useSession } from "next-auth/react";
 
 export default function NewCase() {
+  const { status } = useSession();
   const router = useRouter();
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  if (status === "loading" || status === "unauthenticated") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        <Loader2 className="w-8 h-8 animate-spin text-white/50" />
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

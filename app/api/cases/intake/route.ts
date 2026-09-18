@@ -4,9 +4,16 @@ import { z } from "zod";
 import { google } from "@ai-sdk/google";
 import dbConnect from "@/lib/db";
 import Case from "@/models/Case";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { description } = await req.json();
 
     if (!description) {
@@ -51,7 +58,7 @@ Return strict structured JSON.`,
 
     // Create a new case in the database
     const newCase = await Case.create({
-      userId: "demo-user", // Hardcoded for demo
+      userId: (session.user as any).id,
       title: object.issue.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase()),
       category: object.category,
       issue: object.issue,

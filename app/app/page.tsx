@@ -1,14 +1,56 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Plus, FileText, ArrowRight } from "lucide-react";
+import { Plus, FileText, ArrowRight, Loader2 } from "lucide-react";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [cases, setCases] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetch("/api/cases")
+        .then((res) => res.json())
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setCases(data);
+          }
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setLoading(false);
+        });
+    }
+  }, [status]);
+
+  if (status === "loading" || (status === "authenticated" && loading)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        <Loader2 className="w-8 h-8 animate-spin text-white/50" />
+      </div>
+    );
+  }
+
+  if (status === "unauthenticated") {
+    return null;
+  }
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-black text-white">
       <ShaderBackground />
@@ -38,32 +80,40 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Demo Case Card */}
-          <motion.div 
-            whileHover={{ y: -4 }}
-            className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 flex flex-col gap-4 transition-colors hover:bg-white/10"
-          >
-            <div>
-              <h3 className="font-semibold text-lg text-white">Landlord Deposit Dispute</h3>
-              <p className="text-sm text-slate-400">Housing • Delhi, India</p>
-            </div>
-            
-            <div className="text-2xl font-bold text-white">₹30,000</div>
-            
-            <div className="bg-white/10 rounded-2xl p-4 mt-auto">
-              <div className="text-xs font-medium text-slate-400 mb-1">Stage 2 of 5</div>
-              <div className="font-medium text-white">Evidence collection</div>
-            </div>
-            
-            <div className="flex items-center justify-between mt-2">
-              <span className="text-xs text-slate-400">Updated 2 hours ago</span>
-              <Button asChild variant="ghost" size="sm" className="rounded-xl text-white hover:bg-white/10 hover:text-white">
-                <Link href="/app/cases/demo">
-                  View <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
+          {cases.map((c) => (
+            <motion.div 
+              key={c._id}
+              whileHover={{ y: -4 }}
+              className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 flex flex-col gap-4 transition-colors hover:bg-white/10"
+            >
+              <div>
+                <h3 className="font-semibold text-lg text-white line-clamp-1">{c.title || "Untitled Case"}</h3>
+                <p className="text-sm text-slate-400">
+                  {c.category || "General"} • {c.jurisdiction?.city || "Unknown City"}, {c.jurisdiction?.country || "Unknown Country"}
+                </p>
+              </div>
+              
+              <div className="text-2xl font-bold text-white">
+                {c.amounts?.[0] ? `${c.amounts[0].currency} ${c.amounts[0].value.toLocaleString()}` : "N/A"}
+              </div>
+              
+              <div className="bg-white/10 rounded-2xl p-4 mt-auto">
+                <div className="text-xs font-medium text-slate-400 mb-1">Status</div>
+                <div className="font-medium text-white">{c.status || "Intake"}</div>
+              </div>
+              
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-xs text-slate-400">
+                  {new Date(c.updatedAt || c.createdAt).toLocaleDateString()}
+                </span>
+                <Button asChild variant="ghost" size="sm" className="rounded-xl text-white hover:bg-white/10 hover:text-white">
+                  <Link href={`/app/cases/${c._id}`}>
+                    View <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                </Button>
+              </div>
+            </motion.div>
+          ))}
 
           {/* Empty State / New Case */}
           <motion.div 
