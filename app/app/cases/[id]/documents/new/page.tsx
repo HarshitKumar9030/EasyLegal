@@ -4,19 +4,26 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { ArrowLeft, Loader2, Download, Copy, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Loader2, Download, Copy, Check, Sparkles, Wand2 } from "lucide-react";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { PageLoader } from "@/components/PageLoader";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 
 export default function DocumentEditor() {
   const params = useParams();
   const router = useRouter();
   const [document, setDocument] = useState<any>(null);
+  const [documentBody, setDocumentBody] = useState("");
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [isFormatting, setIsFormatting] = useState(false);
 
   useEffect(() => {
     const generateDocument = async () => {
@@ -27,6 +34,7 @@ export default function DocumentEditor() {
         if (res.ok) {
           const data = await res.json();
           setDocument(data);
+          setDocumentBody(data.body || "");
         }
       } catch (error) {
         console.error(error);
@@ -38,11 +46,24 @@ export default function DocumentEditor() {
   }, [params.id]);
 
   const handleCopy = () => {
-    if (document?.body) {
-      navigator.clipboard.writeText(document.body);
+    if (documentBody) {
+      navigator.clipboard.writeText(documentBody);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
+  };
+
+  const handleAiFormat = () => {
+    if (!aiPrompt.trim() || isFormatting) return;
+    
+    setIsFormatting(true);
+    
+    // Simulate AI formatting delay
+    setTimeout(() => {
+      setDocumentBody((prev) => prev + `\n\n> **AI Note:** Formatted based on prompt: "${aiPrompt}"\n\n`);
+      setIsFormatting(false);
+      setAiPrompt("");
+    }, 2500);
   };
 
   if (loading) {
@@ -78,16 +99,89 @@ export default function DocumentEditor() {
       </header>
 
       <main className="flex-1 p-6 max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-8 z-10">
-        <div className="lg:col-span-2">
-          <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-sm">
-            <div className="p-4 border-b border-white/10 bg-white/5 flex items-center justify-between">
-              <div className="font-medium text-white">{document?.title || "Draft Document"}</div>
-              <div className="text-xs text-slate-400">Editable</div>
-            </div>
-            <textarea
-              className="w-full min-h-[600px] p-8 focus:outline-none resize-y font-serif text-base leading-relaxed bg-transparent text-white placeholder:text-slate-500"
-              defaultValue={document?.body}
+        <div className="lg:col-span-2 flex flex-col gap-4">
+          {/* AI Formatting Agent Bar */}
+          <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-2 flex items-center gap-2 shadow-sm">
+            <Sparkles className="w-5 h-5 text-purple-400 ml-2 shrink-0" />
+            <input 
+              type="text" 
+              placeholder="Ask AI to format or rewrite (e.g., 'Make it more professional')" 
+              className="flex-1 bg-transparent border-none focus:outline-none text-sm text-white placeholder:text-slate-500 px-2"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAiFormat()}
             />
+            <Button 
+              size="sm" 
+              onClick={handleAiFormat} 
+              disabled={isFormatting || !aiPrompt.trim()} 
+              className="bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 rounded-xl shrink-0"
+            >
+              {isFormatting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4 mr-2" />}
+              {isFormatting ? "Formatting..." : "Format"}
+            </Button>
+          </div>
+
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-sm relative flex-1 flex flex-col">
+            <div className="p-4 border-b border-white/10 bg-white/5 flex items-center justify-between shrink-0">
+              <div className="font-medium text-white">{document?.title || "Draft Document"}</div>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setIsEditing(!isEditing)} 
+                  className="text-xs h-8 rounded-lg text-slate-300 hover:text-white hover:bg-white/10"
+                >
+                  {isEditing ? "Preview Markdown" : "Edit Raw Text"}
+                </Button>
+              </div>
+            </div>
+            
+            <div className="relative flex-1 min-h-[600px]">
+              <AnimatePresence>
+                {isFormatting && (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 z-10 bg-black/40 backdrop-blur-sm flex items-center justify-center"
+                  >
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="relative w-16 h-16">
+                        <motion.div 
+                          animate={{ rotate: 360 }} 
+                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                          className="absolute inset-0 rounded-full border-t-2 border-purple-500"
+                        />
+                        <Sparkles className="w-8 h-8 text-purple-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                      </div>
+                      <motion.div 
+                        animate={{ opacity: [0.5, 1, 0.5] }} 
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        className="text-purple-300 font-medium text-sm"
+                      >
+                        AI is formatting your document...
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {isEditing ? (
+                <textarea
+                  className="w-full h-full absolute inset-0 p-8 focus:outline-none resize-none font-mono text-sm leading-relaxed bg-transparent text-white placeholder:text-slate-500"
+                  value={documentBody}
+                  onChange={(e) => setDocumentBody(e.target.value)}
+                  placeholder="Start typing your document here..."
+                />
+              ) : (
+                <div className="p-8 h-full overflow-y-auto prose prose-invert prose-slate max-w-none font-serif prose-p:leading-relaxed prose-headings:text-white prose-a:text-blue-400">
+                  <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+                    {documentBody || "*No content yet.*"}
+                  </ReactMarkdown>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
