@@ -1,26 +1,95 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
+@theme {
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+:root {
+  --background: #090c12;
+  --foreground: #f7f9fc;
+  --primary: #f7f9fc;
+  --primary-foreground: #090c12;
+  --secondary: #1b2432;
+  --secondary-foreground: #f7f9fc;
+  --muted: #121925;
+  --muted-foreground: #9eacc1;
+  --accent: #253149;
+  --accent-foreground: #f7f9fc;
+  --destructive: #ef6461;
+  --destructive-foreground: #f7f9fc;
+  --border: transparent;
+  --input: #202b3e;
+  --ring: #a9c4ea;
+  --radius: 1rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f172a;
+    --foreground: #f8fafc;
+    --primary: #f8fafc;
+    --primary-foreground: #0f172a;
+    --secondary: #1e293b;
+    --secondary-foreground: #f8fafc;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    --accent: #1e293b;
+    --accent-foreground: #f8fafc;
+    --destructive: #7f1d1d;
+    --destructive-foreground: #f8fafc;
+    --border: #1e293b;
+    --input: #1e293b;
+    --ring: #cbd5e1;
   }
 }
 
 body {
-  background: var(--background);
+  background-color: #090c12;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Keep product routes on the same quiet, borderless glass system as the landing. */
+[class*="border-"] {
+  border-color: transparent !important;
+}
+
+[class*="shadow-"] {
+  box-shadow: none !important;
+}
+
+.bg-background {
+  background-color: rgba(18, 25, 37, 0.78) !important;
+}
+
+.bg-muted\/30 {
+  background-color: rgba(9, 12, 18, 0.72) !important;
+}
+
+.bg-muted\/50,
+.bg-muted\/\[0\.5\] {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.bg-background\/95 {
+  background-color: rgba(18, 25, 37, 0.78) !important;
 }
