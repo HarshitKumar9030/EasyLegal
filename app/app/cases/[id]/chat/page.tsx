@@ -101,7 +101,6 @@ export default function CaseChat() {
       
       <header className="px-6 py-4 flex items-center justify-between bg-white/5 backdrop-blur-2xl border-b border-white/10 z-10">
         <div className="flex items-center gap-4">
-          <Navigation caseId={params.id as string} />
           <Button asChild variant="ghost" size="sm" className="rounded-xl text-white hover:bg-white/10 hover:text-white hidden sm:flex">
             <Link href={`/app/cases/${params.id}`}>
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -112,13 +111,16 @@ export default function CaseChat() {
             {caseData ? `Chat: ${caseData.title}` : "Loading..."}
           </div>
         </div>
-        <Button asChild variant="outline" size="sm" className="rounded-xl bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white">
-          <Link href={`/app/cases/${params.id}/documents/new`}>
-            <FileText className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">Generate Document</span>
-            <span className="sm:hidden">Doc</span>
-          </Link>
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button asChild variant="outline" size="sm" className="rounded-xl bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white">
+            <Link href={`/app/cases/${params.id}/documents/new`}>
+              <FileText className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Generate Document</span>
+              <span className="sm:hidden">Doc</span>
+            </Link>
+          </Button>
+          <Navigation caseId={params.id as string} />
+        </div>
       </header>
 
       <main className="flex-1 flex flex-col w-full z-0">

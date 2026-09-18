@@ -15,7 +15,6 @@ export default function Dashboard() {
       
       <header className="px-6 py-4 flex items-center justify-between bg-white/5 backdrop-blur-2xl border-b border-white/10 z-10">
         <div className="flex items-center gap-4">
-          <Navigation />
           <div className="font-bold text-xl tracking-tight">
             <Link href="/">EasyLegal</Link>
           </div>
@@ -27,10 +26,13 @@ export default function Dashboard() {
               New Case
             </Link>
           </Button>
+          <div className="z-20">
+            <Navigation />
+          </div>
         </nav>
       </header>
 
-      <main className="flex-1 p-6 max-w-6xl mx-auto w-full z-1flex-1 flex flex-col w-full z-100">
+      <main className="flex-1 p-6 max-w-6xl mx-auto w-full z-10">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold tracking-tight">Your cases</h1>
         </div>

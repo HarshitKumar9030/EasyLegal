@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle2, HelpCircle, MapPin, Users, IndianRupee, FileText, Scale, Shield, ArrowRight } from "lucide-react";
+import { ArrowLeft, CheckCircle2, HelpCircle, MapPin, Users, IndianRupee, FileText, Scale, Shield, ArrowRight, FolderOpen } from "lucide-react";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { PageLoader } from "@/components/PageLoader";
 import { Footer } from "@/components/Footer";
@@ -48,7 +48,6 @@ export default function CaseOverview() {
       
       <header className="px-6 py-4 flex items-center justify-between bg-white/5 backdrop-blur-2xl border-b border-white/10 z-10">
         <div className="flex items-center gap-4">
-          <Navigation caseId={params.id as string} />
           <Button asChild variant="ghost" size="sm" className="rounded-xl text-white hover:bg-white/10 hover:text-white hidden sm:flex">
             <Link href="/app">
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -58,6 +57,9 @@ export default function CaseOverview() {
           <div className="font-medium text-sm text-slate-400">
             {caseData.category.toUpperCase()}
           </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <Navigation caseId={params.id as string} />
         </div>
       </header>
 
@@ -163,7 +165,7 @@ export default function CaseOverview() {
                 <span className="font-medium">Fact Sheet</span>
               </Link>
               <Link href={`/app/cases/${params.id}/evidence`} className="px-4 py-3 hover:bg-white/10 flex items-center gap-3 text-slate-400 hover:text-white transition-colors">
-                <Shield className="w-4 h-4" />
+                <FolderOpen className="w-4 h-4" />
                 <span>Evidence Vault</span>
               </Link>
               <Link href={`/app/cases/${params.id}/sources`} className="px-4 py-3 hover:bg-white/10 flex items-center gap-3 text-slate-400 hover:text-white transition-colors">
