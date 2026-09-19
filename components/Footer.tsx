@@ -15,10 +15,7 @@ export function Footer() {
           className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 overflow-hidden"
         >
           <span className="relative text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
-            Made By Harshit
-          </span>
-          <span className="relative text-xs text-slate-500 group-hover:text-slate-300 transition-colors">
-            (www.harshit.page)
+            Made by Harshit
           </span>
         </a>
       </div>

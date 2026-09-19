@@ -50,17 +50,17 @@ export default function Home() {
     <div className="min-h-screen flex flex-col relative overflow-x-clip bg-black">
       <ShaderBackground />
       
-      <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
-        <header className="w-full max-w-5xl px-6 py-4 flex items-center justify-between bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-full pointer-events-auto">
-          <div className="flex items-center gap-2 font-bold text-xl tracking-tight text-white">
-            <Scale className="w-6 h-6" />
+      <div className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+        <header className="w-full max-w-5xl px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-full pointer-events-auto">
+          <div className="flex items-center gap-2 font-bold text-lg sm:text-xl tracking-tight text-white">
+            <Scale className="w-5 h-5 sm:w-6 sm:h-6" />
             EasyLegal
           </div>
-          <nav className="flex items-center gap-6">
-            <Link href="/app" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
+          <nav className="flex items-center gap-3 sm:gap-6">
+            <Link href="/app" className="text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition-colors">
               Dashboard
             </Link>
-            <Button asChild variant="default" size="sm" className="bg-white text-black hover:bg-slate-200 rounded-full px-6">
+            <Button asChild variant="default" size="sm" className="bg-white text-black hover:bg-slate-200 rounded-full px-4 sm:px-6 text-xs sm:text-sm h-8 sm:h-9">
               <Link href="/app/cases/new">Start a case</Link>
             </Button>
           </nav>
@@ -69,9 +69,9 @@ export default function Home() {
 
       <main className="flex-1 flex flex-col z-10 w-full">
         {/* Hero Section */}
-        <div className="min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-24 text-center">
-          <div className="max-w-5xl w-full space-y-8 bg-white/5 backdrop-blur-3xl p-12 md:p-20 rounded-[3rem] border border-white/10 shadow-2xl">
-            <h1 ref={titleRef} className="text-6xl md:text-8xl font-extrabold tracking-tighter text-balance leading-[1.1] perspective-1000">
+        <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-32 pb-24 text-center">
+          <div className="max-w-5xl w-full space-y-6 sm:space-y-8 bg-white/5 backdrop-blur-3xl p-6 sm:p-12 md:p-20 rounded-[2rem] sm:rounded-[3rem] border border-white/10 shadow-2xl">
+            <h1 ref={titleRef} className="text-5xl sm:text-6xl md:text-8xl font-extrabold tracking-tighter text-balance leading-[1.1] perspective-1000">
               <div className="overflow-hidden pb-2"><div className="title-line text-white origin-bottom">Know your rights.</div></div>
               <div className="overflow-hidden pb-2"><div className="title-line text-white origin-bottom">Know your next step.</div></div>
             </h1>
