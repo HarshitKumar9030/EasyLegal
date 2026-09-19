@@ -9,7 +9,7 @@ import { AlignRight, X, Home, Briefcase, MessageSquare, FileText, Scale, ShieldA
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 
-export function Navigation({ caseId }: { caseId?: string }) {
+export function Navigation({ caseId, caseStatus }: { caseId?: string, caseStatus?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
@@ -18,16 +18,18 @@ export function Navigation({ caseId }: { caseId?: string }) {
     setMounted(true);
   }, []);
 
+  const isIntake = caseStatus === "Intake";
+
   const links = caseId ? [
-    { href: `/app/cases/${caseId}`, label: "Overview", icon: Briefcase },
-    { href: `/app/cases/${caseId}/chat`, label: "AI Assistant", icon: MessageSquare },
-    { href: `/app/cases/${caseId}/questions`, label: "Intake Questions", icon: HelpCircle },
-    { href: `/app/cases/${caseId}/evidence`, label: "Evidence Vault", icon: FolderOpen },
-    { href: `/app/cases/${caseId}/sources`, label: "Legal Sources", icon: Scale },
-    { href: `/app/cases/${caseId}/escalation`, label: "Escalation", icon: ShieldAlert },
-    { href: `/app/cases/${caseId}/documents/new`, label: "Documents", icon: FileText },
+    { href: `/app/cases/${caseId}`, label: "Overview", icon: Briefcase, disabled: false },
+    { href: `/app/cases/${caseId}/questions`, label: "Intake Questions", icon: HelpCircle, disabled: false },
+    { href: `/app/cases/${caseId}/chat`, label: "AI Assistant", icon: MessageSquare, disabled: isIntake },
+    { href: `/app/cases/${caseId}/evidence`, label: "Evidence Vault", icon: FolderOpen, disabled: isIntake },
+    { href: `/app/cases/${caseId}/sources`, label: "Legal Sources", icon: Scale, disabled: isIntake },
+    { href: `/app/cases/${caseId}/escalation`, label: "Escalation", icon: ShieldAlert, disabled: isIntake },
+    { href: `/app/cases/${caseId}/documents/new`, label: "Documents", icon: FileText, disabled: isIntake },
   ] : [
-    { href: "/app", label: "Dashboard", icon: Home },
+    { href: "/app", label: "Dashboard", icon: Home, disabled: false },
   ];
 
   return (
@@ -75,6 +77,20 @@ export function Navigation({ caseId }: { caseId?: string }) {
                   {links.map((link) => {
                     const isActive = pathname === link.href;
                     const Icon = link.icon;
+                    
+                    if (link.disabled) {
+                      return (
+                        <div 
+                          key={link.href} 
+                          className="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-600 cursor-not-allowed"
+                          title="Complete intake questions to unlock"
+                        >
+                          <Icon className="w-5 h-5 opacity-50" />
+                          {link.label}
+                        </div>
+                      );
+                    }
+
                     return (
                       <Link 
                         key={link.href} 

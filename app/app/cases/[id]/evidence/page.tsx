@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -16,10 +16,28 @@ export default function EvidenceVault() {
   const caseId = params.id as string;
   const [isDragging, setIsDragging] = useState(false);
   const [evidence, setEvidence] = useState<any[]>([]);
+  const [caseData, setCaseData] = useState<any>(null);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
+    const fetchCase = async () => {
+      try {
+        const res = await fetch(`/api/cases/${caseId}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === "Intake") {
+            router.push(`/app/cases/${caseId}/questions`);
+            return;
+          }
+          setCaseData(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCase();
     loadEvidence();
   }, [caseId]);
 
@@ -140,7 +158,7 @@ export default function EvidenceVault() {
             <span className="hidden sm:inline">{isUploading ? "Uploading..." : "Upload Files"}</span>
             <span className="sm:hidden">{isUploading ? "..." : "Upload"}</span>
           </Button>
-          <Navigation caseId={params.id as string} />
+          <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
         </div>
       </header>
 

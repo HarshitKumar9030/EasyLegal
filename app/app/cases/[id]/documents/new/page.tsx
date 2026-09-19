@@ -19,6 +19,7 @@ export default function DocumentEditor() {
   const params = useParams();
   const router = useRouter();
   const [document, setDocument] = useState<any>(null);
+  const [caseData, setCaseData] = useState<any>(null);
   const [documentBody, setDocumentBody] = useState("");
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -39,9 +40,14 @@ export default function DocumentEditor() {
         // First check if document already exists
         const caseRes = await fetch(`/api/cases/${params.id}`);
         if (caseRes.ok) {
-          const caseData = await caseRes.json();
-          if (caseData.documents && caseData.documents.length > 0) {
-            const existingDoc = caseData.documents[caseData.documents.length - 1];
+          const data = await caseRes.json();
+          if (data.status === "Intake") {
+            router.push(`/app/cases/${params.id}/questions`);
+            return;
+          }
+          setCaseData(data);
+          if (data.documents && data.documents.length > 0) {
+            const existingDoc = data.documents[data.documents.length - 1];
             setDocument(existingDoc);
             setDocumentBody(existingDoc.body || "");
             setLoading(false);
@@ -133,7 +139,7 @@ export default function DocumentEditor() {
       
       <header className="px-6 py-4 flex items-center justify-between border-b border-white/10 bg-white/5 backdrop-blur-2xl z-10 shrink-0">
         <div className="flex items-center gap-4">
-          <Navigation caseId={params.id as string} />
+          <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
           <Button asChild variant="ghost" size="sm" className="rounded-xl text-white hover:bg-white/10 hover:text-white hidden sm:flex">
             <Link href={`/app/cases/${params.id}/escalation`}>
               <ArrowLeft className="w-4 h-4 mr-2" />

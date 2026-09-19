@@ -22,8 +22,10 @@ export default function EscalationPathway() {
       try {
         const res = await fetch(`/api/cases/${params.id}/escalation`);
         if (res.ok) {
-          const data = await res.json();
-          setCaseData(data);
+          const data = await res.json();          if (data.status === "Intake") {
+            router.push(`/app/cases/${params.id}/questions`);
+            return;
+          }          setCaseData(data);
         }
       } catch (error) {
         console.error(error);
@@ -62,7 +64,7 @@ export default function EscalationPathway() {
       <ShaderBackground />
       
       <header className="px-6 py-4 flex items-center border-b border-white/10 bg-white/5 backdrop-blur-2xl z-10 gap-4">
-        <Navigation caseId={params.id as string} />
+        <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
         <Button asChild variant="ghost" size="sm" className="rounded-xl text-white hover:bg-white/10 hover:text-white hidden sm:flex">
           <Link href={`/app/cases/${params.id}`}>
             <ArrowLeft className="w-4 h-4 mr-2" />

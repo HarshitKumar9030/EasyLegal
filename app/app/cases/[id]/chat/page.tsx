@@ -76,6 +76,10 @@ export default function CaseChat() {
         const res = await fetch(`/api/cases/${params.id}`);
         if (res.ok) {
           const data = await res.json();
+          if (data.status === "Intake") {
+            window.location.href = `/app/cases/${params.id}/questions`;
+            return;
+          }
           setCaseData(data);
           if (data.messages && data.messages.length > 0) {
             setMessages(data.messages.map((m: any) => ({
@@ -136,7 +140,7 @@ export default function CaseChat() {
               <span className="sm:hidden">Doc</span>
             </Link>
           </Button>
-          <Navigation caseId={params.id as string} />
+          <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
         </div>
       </header>
 

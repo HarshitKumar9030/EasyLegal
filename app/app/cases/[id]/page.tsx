@@ -109,7 +109,7 @@ export default function CaseOverview() {
           >
             {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
           </Button>
-          <Navigation caseId={params.id as string} />
+          <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
         </div>
       </header>
 
