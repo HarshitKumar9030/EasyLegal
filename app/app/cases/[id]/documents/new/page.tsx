@@ -14,6 +14,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import { useSession } from "next-auth/react";
+import { getEvidenceByCaseId } from "@/lib/indexedDB";
 
 export default function DocumentEditor() {
   const { status } = useSession();
@@ -37,8 +38,16 @@ export default function DocumentEditor() {
     if (status !== "authenticated") return;
     const generateDocument = async () => {
       try {
+        // Fetch evidence to include in context
+        const evidence = await getEvidenceByCaseId(params.id as string);
+        const evidenceContext = evidence.length > 0 
+          ? `The user has the following evidence files:\n${evidence.map(e => `- ${e.name}${e.extractedText ? ` (Extracted content: ${e.extractedText.substring(0, 1000)}...)` : ''}`).join("\n")}`
+          : "";
+
         const res = await fetch(`/api/cases/${params.id}/documents/generate`, {
           method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ evidenceContext }),
         });
         if (res.ok) {
           const data = await res.json();

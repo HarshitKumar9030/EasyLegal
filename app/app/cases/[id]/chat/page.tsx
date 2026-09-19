@@ -9,6 +9,7 @@ import { ShaderBackground } from "@/components/ShaderBackground";
 import { PageLoader } from "@/components/PageLoader";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
+import { getEvidenceByCaseId } from "@/lib/indexedDB";
 
 type ChatMessage = {
   id: string;
@@ -20,6 +21,7 @@ export default function CaseChat() {
   const params = useParams();
   const router = useRouter();
   const [caseData, setCaseData] = useState<any>(null);
+  const [evidence, setEvidence] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -43,10 +45,23 @@ export default function CaseChat() {
     setIsLoading(true);
 
     try {
+      // Include evidence metadata and extracted text in the request context
+      const evidenceContext = evidence.length > 0 
+        ? `\n\n[System Note: The user has the following evidence files in their vault:\n${evidence.map(e => `- ${e.name}${e.extractedText ? ` (Extracted content: ${e.extractedText.substring(0, 500)}...)` : ''}`).join("\n")}\nPlease refer to them if relevant.]`
+        : "";
+
+      const messagesToSend = [...nextMessages];
+      if (evidenceContext) {
+        messagesToSend[messagesToSend.length - 1] = {
+          ...messagesToSend[messagesToSend.length - 1],
+          content: messagesToSend[messagesToSend.length - 1].content + evidenceContext
+        };
+      }
+
       const response = await fetch(`/api/cases/${params.id}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages }),
+        body: JSON.stringify({ messages: messagesToSend }),
       });
       if (!response.ok || !response.body) throw new Error("Unable to reach the case assistant.");
 
@@ -88,7 +103,18 @@ export default function CaseChat() {
         console.error(error);
       }
     };
+    
+    const fetchEvidence = async () => {
+      try {
+        const data = await getEvidenceByCaseId(params.id as string);
+        setEvidence(data);
+      } catch (error) {
+        console.error("Failed to load evidence:", error);
+      }
+    };
+
     fetchCase();
+    fetchEvidence();
   }, [params.id]);
 
   useEffect(() => {

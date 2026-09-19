@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowLeft, Upload, Loader2 } from "lucide-react";
+import { ArrowLeft, Upload, Loader2, FileText, X } from "lucide-react";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
@@ -16,6 +16,9 @@ export default function NewCase() {
   const router = useRouter();
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -46,6 +49,27 @@ export default function NewCase() {
       
       if (res.ok) {
         const data = await res.json();
+        
+        // If there's an attached file, we should ideally save it to the evidence vault
+        // But since evidence vault uses IndexedDB (client-side), we can save it there
+        if (attachedFile) {
+          try {
+            const { saveEvidence } = await import("@/lib/indexedDB");
+            await saveEvidence({
+              id: crypto.randomUUID(),
+              caseId: data.caseId,
+              name: attachedFile.name,
+              type: attachedFile.type.startsWith("image/") ? "image" : "document",
+              mimeType: attachedFile.type,
+              size: `${(attachedFile.size / 1024 / 1024).toFixed(2)} MB`,
+              date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+              file: attachedFile,
+            });
+          } catch (err) {
+            console.error("Failed to save evidence to IndexedDB", err);
+          }
+        }
+
         router.push(`/app/cases/${data.caseId}`);
       } else {
         console.error("Failed to create case");
@@ -54,6 +78,38 @@ export default function NewCase() {
     } catch (error) {
       console.error(error);
       setIsSubmitting(false);
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setAttachedFile(file);
+    setIsExtracting(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/extract", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.text) {
+          setDescription((prev) => prev + (prev ? "\n\n" : "") + `--- Extracted from ${file.name} ---\n${data.text}`);
+        }
+      }
+    } catch (error) {
+      console.error("Extraction failed:", error);
+    } finally {
+      setIsExtracting(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -95,22 +151,53 @@ export default function NewCase() {
                 disabled={isSubmitting}
               />
               
-              <div className="flex items-center gap-4">
-                <Button type="button" variant="outline" className="rounded-2xl border-dashed border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white">
-                  <Upload className="w-4 h-4 mr-2" />
-                  Attach documents (optional)
+              <div className="flex items-center gap-4 flex-wrap">
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleFileChange} 
+                  className="hidden" 
+                  accept="image/*,application/pdf,text/plain"
+                />
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isExtracting || isSubmitting}
+                  className="rounded-2xl border-dashed border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+                >
+                  {isExtracting ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4 mr-2" />
+                  )}
+                  {isExtracting ? "Extracting info..." : "Attach documents (optional)"}
                 </Button>
                 <span className="text-sm text-slate-400">
                   PDF, JPG, PNG supported
                 </span>
               </div>
+
+              {attachedFile && (
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10 w-fit">
+                  <FileText className="w-4 h-4 text-blue-400" />
+                  <span className="text-sm text-slate-300">{attachedFile.name}</span>
+                  <button 
+                    type="button" 
+                    onClick={() => setAttachedFile(null)}
+                    className="text-slate-400 hover:text-white ml-2"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end pt-4">
               <Button 
                 type="submit" 
                 size="lg" 
-                disabled={!description.trim() || isSubmitting}
+                disabled={!description.trim() || isSubmitting || isExtracting}
                 className="w-full sm:w-auto bg-white text-black hover:bg-slate-200 rounded-xl"
               >
                 {isSubmitting ? (

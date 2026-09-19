@@ -8,6 +8,9 @@ import Case from "@/models/Case";
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+    const body = await req.json().catch(() => ({}));
+    const evidenceContext = body.evidenceContext || "";
+
     await dbConnect();
     const caseData = await Case.findById(id);
     
@@ -29,7 +32,7 @@ Never invent facts, names, dates, amounts, or addresses.
 Use placeholders like [LANDLORD NAME] for missing information.
 Keep the tone professional, factual, firm, and non-threatening.
 Clearly distinguish factual statements from legal assertions.`,
-      prompt: `Issue: ${caseData.issue}\nFacts: ${JSON.stringify(caseData.facts)}\nParties: ${JSON.stringify(caseData.parties)}\nAmounts: ${JSON.stringify(caseData.amounts)}`,
+      prompt: `Issue: ${caseData.issue}\nFacts: ${JSON.stringify(caseData.facts)}\nParties: ${JSON.stringify(caseData.parties)}\nAmounts: ${JSON.stringify(caseData.amounts)}\n\n${evidenceContext}`,
     });
 
     // Save document to case

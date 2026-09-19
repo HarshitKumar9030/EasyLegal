@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowLeft, Upload, FileText, Image as ImageIcon, FileAudio, FileVideo, Trash2, Plus } from "lucide-react";
+import { ArrowLeft, Upload, FileText, Image as ImageIcon, FileAudio, FileVideo, Trash2, Plus, Loader2 } from "lucide-react";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
@@ -16,6 +16,7 @@ export default function EvidenceVault() {
   const caseId = params.id as string;
   const [isDragging, setIsDragging] = useState(false);
   const [evidence, setEvidence] = useState<any[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -50,8 +51,26 @@ export default function EvidenceVault() {
   const handleFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     
+    setIsUploading(true);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      
+      let extractedText = "";
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/extract", {
+          method: "POST",
+          body: formData,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          extractedText = data.text || "";
+        }
+      } catch (error) {
+        console.error("Failed to extract text:", error);
+      }
+
       const newEvidence = {
         id: crypto.randomUUID(),
         caseId,
@@ -61,6 +80,7 @@ export default function EvidenceVault() {
         size: formatBytes(file.size),
         date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         file: file, // Store the actual File/Blob object
+        extractedText,
       };
       
       try {
@@ -70,6 +90,7 @@ export default function EvidenceVault() {
       }
     }
     
+    setIsUploading(false);
     loadEvidence();
   };
 
@@ -107,10 +128,17 @@ export default function EvidenceVault() {
           <div className="font-medium">Evidence Vault</div>
         </div>
         <div className="flex items-center gap-4">
-          <Button size="sm" className="bg-white text-black hover:bg-slate-200 rounded-xl" onClick={() => fileInputRef.current?.click()}>
-            <Plus className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">Upload Files</span>
-            <span className="sm:hidden">Upload</span>
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            onChange={(e) => handleFiles(e.target.files)} 
+            className="hidden" 
+            multiple
+          />
+          <Button size="sm" className="bg-white text-black hover:bg-slate-200 rounded-xl" onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
+            {isUploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Plus className="w-4 h-4 mr-2" />}
+            <span className="hidden sm:inline">{isUploading ? "Uploading..." : "Upload Files"}</span>
+            <span className="sm:hidden">{isUploading ? "..." : "Upload"}</span>
           </Button>
           <Navigation caseId={params.id as string} />
         </div>
