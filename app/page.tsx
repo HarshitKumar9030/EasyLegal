@@ -70,14 +70,14 @@ export default function Home() {
       <main className="flex-1 flex flex-col z-10 w-full">
         {/* Hero Section */}
         <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-32 pb-24 text-center">
-          <div className="max-w-5xl w-full space-y-6 sm:space-y-8 bg-white/5 backdrop-blur-3xl p-6 sm:p-12 md:p-20 rounded-[2rem] sm:rounded-[3rem] border border-white/10 shadow-2xl">
+          <div className="max-w-5xl w-full space-y-6 sm:space-y-8 bg-white/5 backdrop-blur-3xl p-6 sm:p-12 md:p-20 rounded-4xl sm:rounded-[3rem] border border-white/10 shadow-2xl">
             <h1 ref={titleRef} className="text-5xl sm:text-6xl md:text-8xl font-extrabold tracking-tighter text-balance leading-[1.1] perspective-1000">
               <div className="overflow-hidden pb-2"><div className="title-line text-white origin-bottom">Know your rights.</div></div>
               <div className="overflow-hidden pb-2"><div className="title-line text-white origin-bottom">Know your next step.</div></div>
             </h1>
             
             <p ref={subtitleRef} className="text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto text-balance font-light leading-relaxed">
-              EasyLegal helps turn confusing everyday legal problems into structured, source-backed next steps. You don't need to know the legal terminology. Explain what happened in your own words.
+              EasyLegal helps turn confusing everyday legal problems into structured, source-backed next steps. You don&apos;t need to know the legal terminology. Explain what happened in your own words.
             </p>
 
             <div ref={ctaRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
@@ -131,7 +131,7 @@ export default function Home() {
 
       <footer className="relative border-t border-white/10 bg-black/50 backdrop-blur-3xl pt-20 pb-10 z-10 mt-auto overflow-hidden">
         {/* Decorative glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-px bg-linear-to-r from-transparent via-white/50 to-transparent"></div>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 max-w-2xl h-24 bg-white/10 blur-[100px] rounded-full pointer-events-none"></div>
         
         <div className="max-w-6xl mx-auto px-6 flex flex-col items-center">
@@ -146,7 +146,7 @@ export default function Home() {
             Not a substitute for professional legal counsel.
           </p>
           
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8"></div>
+          <div className="w-full h-px bg-linear-to-r from-transparent via-white/10 to-transparent mb-8"></div>
           
           <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-6">
             <p className="text-sm text-slate-500">
@@ -159,7 +159,7 @@ export default function Home() {
               rel="noreferrer"
               className="group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <span className="relative text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
                 Made By Harshit
               </span>

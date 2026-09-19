@@ -1,7 +1,7 @@
 export function Footer() {
   return (
     <footer className="relative border-t border-white/10 bg-black/50 backdrop-blur-3xl pt-12 pb-8 z-10 mt-auto overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-px bg-linear-to-r from-transparent via-white/20 to-transparent"></div>
       
       <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
         <p className="text-sm text-slate-500">

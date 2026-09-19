@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle2, HelpCircle, MapPin, Users, Coins, FileText, Scale, Shield, ArrowRight, FolderOpen, Loader2, Trash2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, HelpCircle, MapPin, Users, Coins, FileText, Scale, ArrowRight, FolderOpen, Loader2, Trash2 } from "lucide-react";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { PageLoader } from "@/components/PageLoader";
 import { Footer } from "@/components/Footer";
@@ -16,6 +15,7 @@ export default function CaseOverview() {
   const { status } = useSession();
   const params = useParams();
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [caseData, setCaseData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -123,7 +123,7 @@ export default function CaseOverview() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-            <div className="bg-white/5 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/10 shadow-xl hover:bg-white/10 transition-colors">
+            <div className="bg-white/5 backdrop-blur-2xl p-6 rounded-4xl border border-white/10 shadow-xl hover:bg-white/10 transition-colors">
               <div className="flex items-center gap-3 text-slate-400 mb-4">
                 <div className="p-2 bg-white/5 rounded-lg">
                   <Users className="w-5 h-5 text-white" />
@@ -131,6 +131,7 @@ export default function CaseOverview() {
                 <span className="text-sm font-medium uppercase tracking-wider">People</span>
               </div>
               <div className="space-y-2">
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {caseData.parties.map((p: any, i: number) => (
                   <div key={i} className="capitalize font-medium text-white text-lg">
                     <span className="text-slate-400 text-sm block mb-0.5">{p.role}</span>
@@ -140,7 +141,7 @@ export default function CaseOverview() {
               </div>
             </div>
             
-            <div className="bg-white/5 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/10 shadow-xl hover:bg-white/10 transition-colors">
+            <div className="bg-white/5 backdrop-blur-2xl p-6 rounded-4xl border border-white/10 shadow-xl hover:bg-white/10 transition-colors">
               <div className="flex items-center gap-3 text-slate-400 mb-4">
                 <div className="p-2 bg-white/5 rounded-lg">
                   <Coins className="w-5 h-5 text-white" />
@@ -148,6 +149,7 @@ export default function CaseOverview() {
                 <span className="text-sm font-medium uppercase tracking-wider">Amount</span>
               </div>
               <div className="space-y-2">
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {caseData.amounts.map((a: any, i: number) => (
                   <div key={i} className="font-medium text-white text-lg">
                     {a.currency} {a.value.toLocaleString()}
@@ -157,7 +159,7 @@ export default function CaseOverview() {
               </div>
             </div>
 
-            <div className="bg-white/5 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/10 shadow-xl hover:bg-white/10 transition-colors">
+            <div className="bg-white/5 backdrop-blur-2xl p-6 rounded-4xl border border-white/10 shadow-xl hover:bg-white/10 transition-colors">
               <div className="flex items-center gap-3 text-slate-400 mb-4">
                 <div className="p-2 bg-white/5 rounded-lg">
                   <MapPin className="w-5 h-5 text-white" />
@@ -171,7 +173,7 @@ export default function CaseOverview() {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white/5 backdrop-blur-2xl p-8 rounded-[2rem] border border-white/10 shadow-2xl">
+            <div className="bg-white/5 backdrop-blur-2xl p-8 rounded-4xl border border-white/10 shadow-2xl">
               <h3 className="text-xl font-medium mb-6 flex items-center gap-3 text-white">
                 <div className="p-2 bg-white/10 rounded-lg">
                   <CheckCircle2 className="w-5 h-5 text-white" />
@@ -192,7 +194,7 @@ export default function CaseOverview() {
               )}
             </div>
 
-            <div className="bg-white/5 backdrop-blur-2xl p-8 rounded-[2rem] border border-white/10 shadow-2xl">
+            <div className="bg-white/5 backdrop-blur-2xl p-8 rounded-4xl border border-white/10 shadow-2xl">
               <h3 className="text-xl font-medium mb-6 flex items-center gap-3 text-white">
                 <div className="p-2 bg-white/10 rounded-lg">
                   <HelpCircle className="w-5 h-5 text-white" />
@@ -216,7 +218,7 @@ export default function CaseOverview() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white text-black p-8 rounded-[2rem] shadow-2xl">
+          <div className="bg-white text-black p-8 rounded-4xl shadow-2xl">
             <h3 className="text-xl font-semibold mb-3">Next Step</h3>
             <p className="text-slate-600 text-base mb-8 leading-relaxed">
               We need a bit more information to determine the best course of action for your case.
@@ -228,7 +230,7 @@ export default function CaseOverview() {
             </Button>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-2xl rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl">
+          <div className="bg-white/5 backdrop-blur-2xl rounded-4xl border border-white/10 overflow-hidden shadow-2xl">
             <div className="p-6 border-b border-white/10 font-medium text-white text-lg flex items-center gap-3">
               <div className="p-2 bg-white/10 rounded-lg">
                 <FolderOpen className="w-5 h-5 text-white" />

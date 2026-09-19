@@ -4,6 +4,7 @@ import { generateObject } from 'ai';
 import { z } from 'zod';
 import { google } from '@ai-sdk/google';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function performLegalResearch(issue: string, facts: string[], jurisdiction: any) {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();

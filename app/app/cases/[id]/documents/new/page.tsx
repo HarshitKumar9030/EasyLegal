@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Loader2, Download, Copy, Check, Wand2 } from "lucide-react";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { PageLoader } from "@/components/PageLoader";
-import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
 import { useSession } from "next-auth/react";
 import { getEvidenceByCaseId } from "@/lib/indexedDB";
@@ -18,7 +17,9 @@ export default function DocumentEditor() {
   const { status } = useSession();
   const params = useParams();
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [document, setDocument] = useState<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [caseData, setCaseData] = useState<any>(null);
   const [documentBody, setDocumentBody] = useState("");
   const [loading, setLoading] = useState(true);
@@ -78,7 +79,7 @@ export default function DocumentEditor() {
       }
     };
     loadOrGenerateDocument();
-  }, [params.id, status]);
+  }, [params.id, status, router]);
 
   const handleCopy = () => {
     if (documentBody) {
@@ -134,7 +135,7 @@ export default function DocumentEditor() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col relative overflow-hidden bg-black text-white print:h-auto print:overflow-visible">
+    <div className="h-dvh flex flex-col relative overflow-hidden bg-black text-white print:h-auto print:overflow-visible">
       <ShaderBackground />
       
       <div className="pt-6 px-4 sm:px-6 flex justify-center z-50 relative shrink-0 print:hidden">
@@ -188,7 +189,7 @@ export default function DocumentEditor() {
               </Button>
             </div>
 
-            <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-sm relative flex flex-col print:border-none print:bg-white print:text-black print:rounded-none print:shadow-none min-h-[600px] print:overflow-visible">
+            <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-sm relative flex flex-col print:border-none print:bg-white print:text-black print:rounded-none print:shadow-none min-h-150 print:overflow-visible">
               <div className="p-4 border-b border-white/10 bg-white/5 flex items-center justify-between shrink-0 print:hidden">
                 <div className="font-medium text-white">{document?.title || "Draft Document"}</div>
                 <div className="flex items-center gap-2">

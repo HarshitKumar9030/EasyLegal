@@ -60,9 +60,11 @@ Be empathetic, clear, and highly structured in your responses.`;
         try {
           // Save the updated conversation to the database
           const updatedMessages = [
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             ...messages.map((m: any) => ({
               id: m.id,
               role: m.role,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               content: typeof m.content === 'string' ? m.content : m.parts?.find((p: any) => p.type === 'text')?.text || '',
             })),
             {

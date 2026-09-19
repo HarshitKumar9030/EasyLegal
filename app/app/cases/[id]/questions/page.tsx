@@ -108,7 +108,7 @@ export default function ClarifyingQuestions() {
                 <textarea
                   value={answers[i] || ""}
                   onChange={(e) => setAnswers({ ...answers, [i]: e.target.value })}
-                  className="w-full min-h-[100px] p-4 rounded-2xl bg-white/10 border border-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-white/20 resize-none transition-all"
+                  className="w-full min-h-25 p-4 rounded-2xl bg-white/10 border border-white/10 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-white/20 resize-none transition-all"
                   placeholder="Your answer..."
                 />
               </div>

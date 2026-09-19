@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Plus, FileText, ArrowRight, Loader2, Briefcase, Scale, Clock } from "lucide-react";
+import { Plus, ArrowRight, Loader2, Briefcase, Scale, Clock } from "lucide-react";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
@@ -29,6 +29,7 @@ const itemVariants = {
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [cases, setCases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -106,7 +107,7 @@ export default function Dashboard() {
           className="mb-12"
         >
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">{userName}</span>
+            Welcome back, <span className="text-transparent bg-clip-text bg-linear-to-r from-white to-white/50">{userName}</span>
           </h1>
           <p className="text-lg text-slate-400">
             You have {activeCases} active {activeCases === 1 ? 'case' : 'cases'} requiring your attention.
@@ -122,14 +123,14 @@ export default function Dashboard() {
           {/* New Case Card */}
           <motion.div variants={itemVariants}>
             <Link href="/app/cases/new" className="block h-full">
-              <div className="bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-xl rounded-[2rem] p-8 border border-white/10 border-dashed flex flex-col items-center justify-center gap-4 text-center h-full min-h-[320px] transition-all duration-300 hover:bg-white/10 hover:border-white/30 group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="bg-linear-to-br from-white/5 to-white/0 backdrop-blur-xl rounded-4xl p-8 border border-white/10 border-dashed flex flex-col items-center justify-center gap-4 text-center h-full min-h-80 transition-all duration-300 hover:bg-white/10 hover:border-white/30 group relative overflow-hidden">
+                <div className="absolute inset-0 bg-linear-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="p-5 rounded-full bg-white/5 border border-white/10 group-hover:scale-110 group-hover:bg-white/10 transition-all duration-300 relative z-10">
                   <Plus className="w-8 h-8 text-white" />
                 </div>
                 <div className="relative z-10">
                   <h3 className="font-semibold text-xl text-white mb-2">Start a new case</h3>
-                  <p className="text-sm text-slate-400 max-w-[200px] mx-auto">Describe your legal issue and let AI guide you through the process.</p>
+                  <p className="text-sm text-slate-400 max-w-50 mx-auto">Describe your legal issue and let AI guide you through the process.</p>
                 </div>
               </div>
             </Link>
@@ -141,7 +142,7 @@ export default function Dashboard() {
               variants={itemVariants}
               whileHover={{ y: -8, scale: 1.02 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-8 border border-white/10 flex flex-col gap-6 transition-all duration-300 hover:bg-white/10 hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:border-white/20 relative overflow-hidden group"
+              className="bg-white/5 backdrop-blur-xl rounded-4xl p-8 border border-white/10 flex flex-col gap-6 transition-all duration-300 hover:bg-white/10 hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:border-white/20 relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-10 -mt-10 transition-all duration-500 group-hover:bg-white/10" />
               
@@ -156,7 +157,7 @@ export default function Dashboard() {
                   </div>
                 </div>
                 
-                <h3 className="font-bold text-xl text-white line-clamp-2 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/70 transition-all">
+                <h3 className="font-bold text-xl text-white line-clamp-2 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-linear-to-r group-hover:from-white group-hover:to-white/70 transition-all">
                   {c.title || "Untitled Case"}
                 </h3>
                 <p className="text-sm text-slate-400 flex items-center gap-1.5">

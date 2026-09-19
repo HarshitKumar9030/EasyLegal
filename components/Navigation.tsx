@@ -15,6 +15,7 @@ export function Navigation({ caseId, caseStatus }: { caseId?: string, caseStatus
   const pathname = usePathname();
 
   useEffect(() => {
+    // eslint-disable-next-line
     setMounted(true);
   }, []);
 
@@ -52,14 +53,14 @@ export function Navigation({ caseId, caseStatus }: { caseId?: string, caseStatus
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setIsOpen(false)}
-                className="fixed inset-0 bg-black z-[9998]"
+                className="fixed inset-0 bg-black z-9998"
               />
               <motion.div
                 initial={{ x: "100%" }}
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                className="fixed top-0 right-0 h-[100dvh] w-72 bg-[#0a0a0a] border-l border-white/10 z-[9999] flex flex-col shadow-2xl"
+                className="fixed top-0 right-0 h-dvh w-72 bg-[#0a0a0a] border-l border-white/10 z-9999 flex flex-col shadow-2xl"
               >
                 <div className="p-6 flex items-center justify-between border-b border-white/10">
                   <span className="font-semibold text-white tracking-tight">EasyLegal</span>

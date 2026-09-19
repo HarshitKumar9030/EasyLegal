@@ -12,7 +12,7 @@ export default function NotFound() {
         </Link>
 
         <section className="grid gap-10 py-16 md:grid-cols-[1fr_1.2fr] md:items-center">
-          <div className="relative flex aspect-square max-w-sm items-center justify-center rounded-[2rem] bg-muted/60">
+          <div className="relative flex aspect-square max-w-sm items-center justify-center rounded-4xl bg-muted/60">
             <div className="absolute left-8 top-8 h-2 w-2 rounded-full bg-primary/30" />
             <div className="absolute bottom-12 right-10 h-3 w-3 rounded-full bg-primary/20" />
             <SearchX className="h-24 w-24 text-muted-foreground/60" strokeWidth={1.2} aria-hidden="true" />

@@ -173,7 +173,7 @@ export default function EvidenceVault() {
         </div>
 
         <div 
-          className={`mb-8 border-2 border-dashed rounded-[2rem] p-12 flex flex-col items-center justify-center text-center transition-colors ${
+          className={`mb-8 border-2 border-dashed rounded-4xl p-12 flex flex-col items-center justify-center text-center transition-colors ${
             isDragging ? "border-white bg-white/10" : "border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/10"
           }`}
           onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}

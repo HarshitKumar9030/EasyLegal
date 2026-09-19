@@ -14,6 +14,7 @@ export async function GET() {
     await dbConnect();
     
     // Fetch cases for the authenticated user, sorted by newest first
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const cases = await Case.find({ userId: (session.user as any).id }).sort({ createdAt: -1 });
     
     return NextResponse.json(cases);
