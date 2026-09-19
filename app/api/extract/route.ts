@@ -32,7 +32,7 @@ export async function POST(req: Request) {
             {
               type: "file",
               data: uint8Array,
-              mimeType: file.type,
+              mediaType: file.type,
             },
           ],
         },

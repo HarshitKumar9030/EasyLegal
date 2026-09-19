@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { streamText } from "ai";
+import { convertToModelMessages, streamText } from "ai";
 import { google } from "@ai-sdk/google";
 import dbConnect from "@/lib/db";
 import Case from "@/models/Case";
@@ -10,7 +10,7 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const { messages } = await req.json();
+    const { messages, evidenceContext } = await req.json();
 
     await dbConnect();
     const caseData = await Case.findById(id);
@@ -19,7 +19,7 @@ export async function POST(
       return new Response("Case not found", { status: 404 });
     }
 
-    const systemPrompt = `You are an expert AI legal assistant helping a user with their specific case.
+    let systemPrompt = `You are an expert AI legal assistant helping a user with their specific case.
     
 Here are the details of the case:
 Title: ${caseData.title}
@@ -38,10 +38,16 @@ Your role is to:
 
 Be empathetic, clear, and highly structured in your responses.`;
 
+    if (evidenceContext) {
+      systemPrompt += `\n\n[System Note: The user has the following evidence files in their vault:\n${evidenceContext}\nPlease refer to them if relevant.]`;
+    }
+
+    const modelMessages = await convertToModelMessages(messages);
+
     const result = streamText({
-      model: google("gemini-1.5-flash"),
+      model: google("gemini-3.8-flash"),
       system: systemPrompt,
-      messages,
+      messages: modelMessages,
     });
 
     return result.toTextStreamResponse();
