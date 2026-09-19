@@ -10,9 +10,6 @@ import { ShaderBackground } from "@/components/ShaderBackground";
 import { PageLoader } from "@/components/PageLoader";
 import { Footer } from "@/components/Footer";
 import { Navigation } from "@/components/Navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkBreaks from "remark-breaks";
 import { useSession } from "next-auth/react";
 import { getEvidenceByCaseId } from "@/lib/indexedDB";
 
@@ -78,10 +75,14 @@ export default function DocumentEditor() {
     
     // Simulate AI formatting delay
     setTimeout(() => {
-      setDocumentBody((prev) => prev + `\n\n> **AI Note:** Formatted based on prompt: "${aiPrompt}"\n\n`);
+      setDocumentBody((prev) => prev + `<br><br><div style="border-left: 4px solid #a855f7; padding-left: 1rem; color: #d8b4fe;"><strong>AI Note:</strong> Formatted based on prompt: "${aiPrompt}"</div><br>`);
       setIsFormatting(false);
       setAiPrompt("");
     }, 2500);
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   if (status === "loading" || status === "unauthenticated") {
@@ -111,12 +112,12 @@ export default function DocumentEditor() {
           </Button>
           <div className="font-medium">Review Document</div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 print:hidden">
           <Button variant="outline" size="sm" onClick={handleCopy} className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white rounded-xl">
             {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
             <span className="hidden sm:inline">Copy</span>
           </Button>
-          <Button size="sm" className="bg-white text-black hover:bg-slate-200 rounded-xl">
+          <Button size="sm" onClick={handlePrint} className="bg-white text-black hover:bg-slate-200 rounded-xl">
             <Download className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline">Export PDF</span>
             <span className="sm:hidden">PDF</span>
@@ -124,10 +125,10 @@ export default function DocumentEditor() {
         </div>
       </header>
 
-      <main className="flex-1 p-6 max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-8 z-10">
-        <div className="lg:col-span-2 flex flex-col gap-4">
+      <main className="flex-1 p-6 max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-8 z-10 print:p-0 print:block print:max-w-none">
+        <div className="lg:col-span-2 flex flex-col gap-4 print:block">
           {/* AI Formatting Agent Bar */}
-          <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-2 flex items-center gap-2 shadow-sm">
+          <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-2 flex items-center gap-2 shadow-sm print:hidden">
             <Sparkles className="w-5 h-5 text-purple-400 ml-2 shrink-0" />
             <input 
               type="text" 
@@ -148,8 +149,8 @@ export default function DocumentEditor() {
             </Button>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-sm relative flex-1 flex flex-col">
-            <div className="p-4 border-b border-white/10 bg-white/5 flex items-center justify-between shrink-0">
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-sm relative flex-1 flex flex-col print:border-none print:bg-white print:text-black print:rounded-none print:shadow-none">
+            <div className="p-4 border-b border-white/10 bg-white/5 flex items-center justify-between shrink-0 print:hidden">
               <div className="font-medium text-white">{document?.title || "Draft Document"}</div>
               <div className="flex items-center gap-2">
                 <Button 
@@ -158,19 +159,19 @@ export default function DocumentEditor() {
                   onClick={() => setIsEditing(!isEditing)} 
                   className="text-xs h-8 rounded-lg text-slate-300 hover:text-white hover:bg-white/10"
                 >
-                  {isEditing ? "Preview Markdown" : "Edit Raw Text"}
+                  {isEditing ? "Preview Document" : "Edit Raw HTML"}
                 </Button>
               </div>
             </div>
             
-            <div className="relative flex-1 min-h-[600px]">
+            <div className="relative flex-1 min-h-[600px] print:min-h-0">
               <AnimatePresence>
                 {isFormatting && (
                   <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 z-10 bg-black/40 backdrop-blur-sm flex items-center justify-center"
+                    className="absolute inset-0 z-10 bg-black/40 backdrop-blur-sm flex items-center justify-center print:hidden"
                   >
                     <div className="flex flex-col items-center gap-4">
                       <div className="relative w-16 h-16">
@@ -195,23 +196,25 @@ export default function DocumentEditor() {
 
               {isEditing ? (
                 <textarea
-                  className="w-full h-full absolute inset-0 p-8 focus:outline-none resize-none font-mono text-sm leading-relaxed bg-transparent text-white placeholder:text-slate-500"
+                  className="w-full h-full absolute inset-0 p-8 focus:outline-none resize-none font-mono text-sm leading-relaxed bg-transparent text-white placeholder:text-slate-500 print:hidden"
                   value={documentBody}
                   onChange={(e) => setDocumentBody(e.target.value)}
                   placeholder="Start typing your document here..."
                 />
               ) : (
-                <div className="p-8 h-full overflow-y-auto prose prose-invert prose-slate max-w-none font-serif prose-p:leading-relaxed prose-headings:text-white prose-a:text-blue-400">
-                  <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
-                    {documentBody || "*No content yet.*"}
-                  </ReactMarkdown>
+                <div className="p-8 md:p-12 h-full overflow-y-auto bg-white text-black print:p-0 print:overflow-visible">
+                  <div 
+                    className="max-w-3xl mx-auto font-serif text-[15px] leading-[1.8] text-justify"
+                    style={{ fontFamily: "'Times New Roman', Times, serif" }}
+                    dangerouslySetInnerHTML={{ __html: documentBody || "<em>No content yet.</em>" }}
+                  />
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 print:hidden">
           <div className="bg-white/5 backdrop-blur-xl p-6 rounded-3xl border border-white/10">
             <h3 className="font-semibold mb-4 text-white">Review before using</h3>
             

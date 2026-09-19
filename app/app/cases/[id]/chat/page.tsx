@@ -19,13 +19,14 @@ export default function CaseChat() {
   const [caseData, setCaseData] = useState<any>(null);
   const [evidence, setEvidence] = useState<any[]>([]);
   const [input, setInput] = useState("");
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const evidenceContext = evidence.length > 0 
     ? evidence.map(e => `- ${e.name}${e.extractedText ? ` (Extracted content: ${e.extractedText.substring(0, 500)}...)` : ''}`).join("\n")
     : "";
 
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, setMessages } = useChat({
     transport: new DefaultChatTransport({
       api: `/api/cases/${params.id}/chat`,
       body: { evidenceContext },
@@ -76,6 +77,13 @@ export default function CaseChat() {
         if (res.ok) {
           const data = await res.json();
           setCaseData(data);
+          if (data.messages && data.messages.length > 0) {
+            setMessages(data.messages.map((m: any) => ({
+              id: m.id,
+              role: m.role,
+              parts: [{ type: "text", text: m.content }]
+            })));
+          }
         }
       } catch (error) {
         console.error(error);
@@ -96,8 +104,13 @@ export default function CaseChat() {
   }, [params.id]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({
+        behavior: status === "streaming" ? "auto" : "smooth",
+        block: "end",
+      });
+    }
+  }, [messages, status]);
 
   return (
     <div className="h-[100dvh] flex flex-col relative overflow-hidden bg-black text-white">
@@ -128,7 +141,7 @@ export default function CaseChat() {
       </header>
 
       <main className="flex-1 flex flex-col w-full z-0 relative">
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-32 scroll-smooth">
+        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 md:p-8 pb-32">
           <div className="max-w-3xl mx-auto space-y-8">
             <AnimatePresence initial={false}>
               {messages.map((m) => {

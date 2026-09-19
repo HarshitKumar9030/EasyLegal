@@ -58,6 +58,12 @@ const CaseSchema = new mongoose.Schema({
     legalSourcesUsed: [{ type: String }],
     missingInformation: [{ type: String }]
   }],
+  messages: [{
+    id: { type: String },
+    role: { type: String },
+    content: { type: String },
+    createdAt: { type: Date, default: Date.now }
+  }],
   status: { type: String, default: 'Intake' },
 }, { timestamps: true });
 

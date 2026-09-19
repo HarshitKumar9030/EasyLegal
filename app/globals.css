@@ -94,3 +94,51 @@ body {
 .bg-background\/95 {
   background-color: rgba(18, 25, 37, 0.78) !important;
 }
+
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  /* Hide all UI elements */
+  header, footer, nav, button, .print\:hidden {
+    display: none !important;
+  }
+  
+  /* Reset margins and paddings for print */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Ensure the document takes full width */
+  .print\:block {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+  
+  /* Remove backgrounds and borders */
+  .print\:bg-white {
+    background-color: white !important;
+  }
+  
+  .print\:text-black {
+    color: black !important;
+  }
+  
+  .print\:border-none {
+    border: none !important;
+  }
+  
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+  
+  /* Ensure text is readable */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

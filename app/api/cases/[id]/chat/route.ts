@@ -25,16 +25,24 @@ Here are the details of the case:
 Title: ${caseData.title}
 Category: ${caseData.category}
 Issue: ${caseData.issue}
+Status: ${caseData.status}
+Escalation Stage: ${caseData.escalationStage}
 Facts: ${caseData.facts?.join(", ")}
 Parties: ${JSON.stringify(caseData.parties)}
 Amounts: ${JSON.stringify(caseData.amounts)}
 Jurisdiction: ${JSON.stringify(caseData.jurisdiction)}
+Timeline: ${JSON.stringify(caseData.timeline)}
+Escalation Plan: ${JSON.stringify(caseData.escalationPlan)}
+Open Questions: ${JSON.stringify(caseData.openQuestions)}
+Sources: ${JSON.stringify(caseData.sources)}
+Documents: ${JSON.stringify(caseData.documents)}
 
 Your role is to:
 1. Answer questions about the case facts and potential legal strategies.
 2. Explain legal concepts in simple, easy-to-understand language.
 3. If the user asks to draft a document (like a demand letter, complaint, or notice), generate a professional draft based on the case facts.
-4. Always remind the user that you are an AI and this is not formal legal advice.
+4. Guide the user through their escalation plan based on their current escalation stage.
+5. Always remind the user that you are an AI and this is not formal legal advice.
 
 Be empathetic, clear, and highly structured in your responses.`;
 
@@ -48,9 +56,35 @@ Be empathetic, clear, and highly structured in your responses.`;
       model: google("gemini-3.8-flash"),
       system: systemPrompt,
       messages: modelMessages,
+      async onFinish({ text }) {
+        try {
+          // Save the updated conversation to the database
+          const updatedMessages = [
+            ...messages.map((m: any) => ({
+              id: m.id,
+              role: m.role,
+              content: typeof m.content === 'string' ? m.content : m.parts?.find((p: any) => p.type === 'text')?.text || '',
+            })),
+            {
+              id: `msg-${Date.now()}`,
+              role: 'assistant',
+              content: text,
+            }
+          ];
+          
+          await Case.findByIdAndUpdate(id, {
+            $set: { messages: updatedMessages }
+          });
+        } catch (err) {
+          console.error("Failed to save chat history:", err);
+        }
+      }
     });
 
-    return result.toTextStreamResponse();
+    return result.toUIMessageStreamResponse({
+      originalMessages: messages,
+      sendReasoning: false,
+    });
   } catch (error) {
     console.error("Chat API Error:", error);
     return new Response("Internal Server Error", { status: 500 });

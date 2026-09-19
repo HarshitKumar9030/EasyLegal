@@ -41,6 +41,22 @@ export default function EscalationPathway() {
   const steps = caseData?.escalationPlan || [];
   const currentStage = caseData?.escalationStage || 1;
 
+  const handleMarkCompleted = async (stage: number) => {
+    try {
+      const res = await fetch(`/api/cases/${params.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ escalationStage: stage + 1 }),
+      });
+      if (res.ok) {
+        const updatedCase = await res.json();
+        setCaseData(updatedCase);
+      }
+    } catch (error) {
+      console.error("Failed to update escalation stage:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-black text-white">
       <ShaderBackground />
@@ -127,17 +143,30 @@ export default function EscalationPathway() {
                         )}
 
                         {step.action.toLowerCase().includes("demand") || step.action.toLowerCase().includes("notice") ? (
-                          <div className="pt-4">
+                          <div className="pt-4 flex gap-4">
                             <Button asChild size="lg" className="bg-white text-black hover:bg-slate-200 rounded-xl">
                               <Link href={`/app/cases/${params.id}/documents/new`}>
                                 <FileText className="w-4 h-4 mr-2" />
                                 Generate Document
                               </Link>
                             </Button>
+                            <Button 
+                              variant="outline" 
+                              className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white rounded-xl"
+                              onClick={() => handleMarkCompleted(step.stage)}
+                            >
+                              Mark as completed
+                            </Button>
                           </div>
                         ) : (
                           <div className="pt-4">
-                            <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white rounded-xl">Mark as completed</Button>
+                            <Button 
+                              variant="outline" 
+                              className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white rounded-xl"
+                              onClick={() => handleMarkCompleted(step.stage)}
+                            >
+                              Mark as completed
+                            </Button>
                           </div>
                         )}
                       </div>

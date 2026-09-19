@@ -21,6 +21,39 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   }
 }
 
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    const updates = await req.json();
+    
+    await dbConnect();
+    
+    const caseData = await Case.findById(id);
+    if (!caseData) {
+      return NextResponse.json({ error: "Case not found" }, { status: 404 });
+    }
+
+    const session = await getServerSession(authOptions);
+    
+    // Allow updating if it's a demo case, otherwise require auth
+    if (caseData.userId !== "demo-user") {
+      if (!session?.user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      if (caseData.userId.toString() !== (session.user as any).id) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
+
+    const updatedCase = await Case.findByIdAndUpdate(id, { $set: updates }, { new: true });
+
+    return NextResponse.json(updatedCase);
+  } catch (error) {
+    console.error("Update case error:", error);
+    return NextResponse.json({ error: "Failed to update case" }, { status: 500 });
+  }
+}
+
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
