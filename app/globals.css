@@ -99,6 +99,7 @@ body {
   body {
     background-color: white !important;
     color: black !important;
+    overflow: visible !important;
   }
   
   /* Hide all UI elements */
