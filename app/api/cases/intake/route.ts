@@ -20,6 +20,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Description is required" }, { status: 400 });
     }
 
+    const countryHeader = req.headers.get("x-vercel-ip-country") || req.headers.get("cf-ipcountry");
+    const detectedCountry = countryHeader || "Unknown";
+
     await dbConnect();
 
     const { object } = await generateObject({
@@ -52,6 +55,7 @@ Do not invent facts.
 Only extract information explicitly stated or clearly supported by the user's message.
 Separate facts and unknowns.
 Identify category, issue, parties, amounts, location, and missing information.
+The user is likely located in ${detectedCountry !== "Unknown" ? detectedCountry : "their local jurisdiction"}. If the user does not specify a country, assume they are in ${detectedCountry !== "Unknown" ? detectedCountry : "their local jurisdiction"}.
 Return strict structured JSON.`,
       prompt: description,
     });

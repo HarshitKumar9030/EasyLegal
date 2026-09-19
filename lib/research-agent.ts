@@ -15,9 +15,10 @@ export async function performLegalResearch(issue: string, facts: string[], juris
       model: google('gemini-3.8-flash'),
       schema: z.object({
         queries: z.array(z.string()).max(3),
+        siteFilters: z.string().describe("Search engine site filters for official government/legal sites in this jurisdiction (e.g., 'site:gov.in OR site:indiacode.nic.in' for India, 'site:gov' for US, 'site:gov.uk' for UK)"),
       }),
-      system: `You are a legal research assistant. Based on the case facts and jurisdiction, generate 2-3 specific search queries to find relevant laws, acts, or official government guidelines.
-Focus on official sources (e.g., India Code, specific state laws).`,
+      system: `You are a legal research assistant. Based on the case facts and jurisdiction, generate 2-3 specific search queries to find relevant laws, acts, constitution, or official government guidelines.
+Focus on official sources for the specific country/jurisdiction (e.g., government websites, official legal codes, constitution).`,
       prompt: `Issue: ${issue}\nJurisdiction: ${JSON.stringify(jurisdiction)}\nFacts: ${JSON.stringify(facts)}`,
     });
 
@@ -25,10 +26,10 @@ Focus on official sources (e.g., India Code, specific state laws).`,
 
     // 2. Execute searches and scrape content
     for (const query of queryObj.queries) {
-      console.log(`Searching for: ${query}`);
+      console.log(`Searching for: ${query} ${queryObj.siteFilters}`);
       
       // Using DuckDuckGo HTML for easier scraping
-      await page.goto(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query + ' site:gov.in OR site:indiacode.nic.in')}`);
+      await page.goto(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query + ' ' + queryObj.siteFilters)}`);
       
       const html = await page.content();
       const $ = cheerio.load(html);

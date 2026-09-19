@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle2, HelpCircle, MapPin, Users, IndianRupee, FileText, Scale, Shield, ArrowRight, FolderOpen, Loader2, Trash2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, HelpCircle, MapPin, Users, Coins, FileText, Scale, Shield, ArrowRight, FolderOpen, Loader2, Trash2 } from "lucide-react";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { PageLoader } from "@/components/PageLoader";
 import { Footer } from "@/components/Footer";
@@ -141,7 +141,7 @@ export default function CaseOverview() {
             <div className="bg-white/5 backdrop-blur-2xl p-6 rounded-[2rem] border border-white/10 shadow-xl hover:bg-white/10 transition-colors">
               <div className="flex items-center gap-3 text-slate-400 mb-4">
                 <div className="p-2 bg-white/5 rounded-lg">
-                  <IndianRupee className="w-5 h-5 text-white" />
+                  <Coins className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-sm font-medium uppercase tracking-wider">Amount</span>
               </div>
