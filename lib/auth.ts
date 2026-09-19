@@ -22,14 +22,7 @@ export const authOptions: NextAuthOptions = {
         const user = await User.findOne({ email: credentials.email });
 
         if (!user) {
-          // For hackathon purposes, auto-register if user doesn't exist
-          const hashedPassword = await bcrypt.hash(credentials.password, 10);
-          const newUser = await User.create({
-            name: credentials.email.split("@")[0],
-            email: credentials.email,
-            password: hashedPassword,
-          });
-          return { id: newUser._id.toString(), name: newUser.name, email: newUser.email };
+          throw new Error("No user found with this email");
         }
 
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password);

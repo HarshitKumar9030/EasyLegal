@@ -5,8 +5,9 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlignRight, X, Home, Briefcase, MessageSquare, FileText, Scale, ShieldAlert, HelpCircle, FolderOpen } from "lucide-react";
+import { AlignRight, X, Home, Briefcase, MessageSquare, FileText, Scale, ShieldAlert, HelpCircle, FolderOpen, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { signOut } from "next-auth/react";
 
 export function Navigation({ caseId }: { caseId?: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -92,7 +93,7 @@ export function Navigation({ caseId }: { caseId?: string }) {
                   })}
                 </div>
                 
-                <div className="p-6 border-t border-white/10">
+                <div className="p-6 border-t border-white/10 space-y-2">
                   <Link 
                     href="/app"
                     onClick={() => setIsOpen(false)}
@@ -101,6 +102,16 @@ export function Navigation({ caseId }: { caseId?: string }) {
                     <Home className="w-5 h-5" />
                     Back to Dashboard
                   </Link>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      signOut({ callbackUrl: "/login" });
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    Sign Out
+                  </button>
                 </div>
               </motion.div>
             </>

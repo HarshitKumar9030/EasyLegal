@@ -13,8 +13,10 @@ import { Navigation } from "@/components/Navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
+import { useSession } from "next-auth/react";
 
 export default function DocumentEditor() {
+  const { status } = useSession();
   const params = useParams();
   const router = useRouter();
   const [document, setDocument] = useState<any>(null);
@@ -26,6 +28,13 @@ export default function DocumentEditor() {
   const [isFormatting, setIsFormatting] = useState(false);
 
   useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
     const generateDocument = async () => {
       try {
         const res = await fetch(`/api/cases/${params.id}/documents/generate`, {
@@ -43,7 +52,7 @@ export default function DocumentEditor() {
       }
     };
     generateDocument();
-  }, [params.id]);
+  }, [params.id, status]);
 
   const handleCopy = () => {
     if (documentBody) {
@@ -65,6 +74,14 @@ export default function DocumentEditor() {
       setAiPrompt("");
     }, 2500);
   };
+
+  if (status === "loading" || status === "unauthenticated") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        <Loader2 className="w-8 h-8 animate-spin text-white/50" />
+      </div>
+    );
+  }
 
   if (loading) {
     return <PageLoader />;

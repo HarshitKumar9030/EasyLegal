@@ -1,16 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function Login() {
+export default function Signup() {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -22,18 +23,39 @@ export default function Login() {
     setLoading(true);
     setError("");
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
 
-    if (res?.error) {
-      setError(res.error);
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Something went wrong");
+        setLoading(false);
+      } else {
+        // Auto-login after successful signup
+        const signInRes = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (signInRes?.error) {
+          setError(signInRes.error);
+          setLoading(false);
+        } else {
+          router.push("/app");
+          router.refresh();
+        }
+      }
+    } catch (err) {
+      setError("An error occurred during signup");
       setLoading(false);
-    } else {
-      router.push("/app");
-      router.refresh();
     }
   };
 
@@ -55,13 +77,14 @@ export default function Login() {
             className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-4 border border-white/20"
           >
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-              <polyline points="10 17 15 12 10 7" />
-              <line x1="15" y1="12" x2="3" y2="12" />
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <line x1="19" y1="8" x2="19" y2="14" />
+              <line x1="22" y1="11" x2="16" y2="11" />
             </svg>
           </motion.div>
-          <h1 className="text-3xl font-bold tracking-tight mb-2">Welcome back</h1>
-          <p className="text-slate-400">Sign in to your account to continue</p>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">Create an account</h1>
+          <p className="text-slate-400">Join us to start managing your cases</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -75,6 +98,18 @@ export default function Login() {
             </motion.div>
           )}
           
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-300">Name</label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-3 rounded-xl bg-white/10 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all"
+              placeholder="John Doe"
+            />
+          </div>
+
           <div className="space-y-2">
             <label className="text-sm font-medium text-slate-300">Email</label>
             <input
@@ -113,14 +148,14 @@ export default function Login() {
             disabled={loading}
             className="w-full mt-6 bg-white text-black hover:bg-slate-200 rounded-xl py-6 text-lg font-medium transition-all active:scale-[0.98]"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign In"}
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign Up"}
           </Button>
         </form>
 
         <div className="mt-6 text-center text-sm text-slate-400">
-          Don't have an account?{" "}
-          <Link href="/signup" className="text-white hover:underline font-medium">
-            Sign up
+          Already have an account?{" "}
+          <Link href="/login" className="text-white hover:underline font-medium">
+            Sign in
           </Link>
         </div>
       </motion.div>
