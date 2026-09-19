@@ -120,31 +120,33 @@ export default function CaseChat() {
     <div className="h-[100dvh] flex flex-col relative overflow-hidden bg-black text-white">
       <ShaderBackground />
       
-      <header className="px-6 py-4 flex items-center justify-between bg-white/5 backdrop-blur-2xl border-b border-white/10 z-10">
-        <div className="flex items-center gap-4">
-          <Button asChild variant="ghost" size="sm" className="rounded-xl text-white hover:bg-white/10 hover:text-white hidden sm:flex">
-            <Link href={`/app/cases/${params.id}`}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Case
-            </Link>
-          </Button>
-          <div className="font-medium text-sm text-slate-400">
-            {caseData ? caseData.title : "Loading..."}
+      <div className="pt-6 px-4 sm:px-6 flex justify-center z-50 relative shrink-0">
+        <header className="w-full max-w-7xl px-4 sm:px-6 py-3 flex items-center justify-between bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-full">
+          <div className="flex items-center gap-4">
+            <Button asChild variant="ghost" size="sm" className="rounded-full text-white hover:bg-white/10 hover:text-white hidden sm:flex h-10 px-4">
+              <Link href={`/app/cases/${params.id}`}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Case
+              </Link>
+            </Button>
+            <div className="font-medium text-sm text-slate-400">
+              {caseData ? caseData.title : "Loading..."}
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <Button asChild variant="outline" size="sm" className="rounded-xl bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white">
-            <Link href={`/app/cases/${params.id}/documents/new`}>
-              <FileText className="w-4 h-4 mr-2" />
-              <span className="hidden sm:inline">Generate Document</span>
-              <span className="sm:hidden">Doc</span>
-            </Link>
-          </Button>
-          <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
-        </div>
-      </header>
+          <div className="flex items-center gap-4">
+            <Button asChild variant="outline" size="sm" className="rounded-full bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white h-10 px-4">
+              <Link href={`/app/cases/${params.id}/documents/new`}>
+                <FileText className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Generate Document</span>
+                <span className="sm:hidden">Doc</span>
+              </Link>
+            </Button>
+            <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
+          </div>
+        </header>
+      </div>
 
-      <main className="flex-1 flex flex-col w-full z-0 relative">
+      <main className="flex-1 flex flex-col w-full z-0 relative min-h-0">
         <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 md:p-8 pb-32">
           <div className="max-w-3xl mx-auto space-y-8">
             <AnimatePresence initial={false}>

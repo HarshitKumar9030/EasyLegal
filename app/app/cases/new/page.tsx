@@ -117,16 +117,18 @@ export default function NewCase() {
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-black text-white">
       <ShaderBackground />
       
-      <header className="px-6 py-4 flex items-center border-b border-white/10 bg-white/5 backdrop-blur-2xl z-10 gap-4">
-        <Navigation />
-        <Button asChild variant="ghost" size="sm" className="rounded-xl text-white hover:bg-white/10 hover:text-white hidden sm:flex">
-          <Link href="/app">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Link>
-        </Button>
-        <div className="font-medium">Start a new case</div>
-      </header>
+      <div className="pt-6 px-4 sm:px-6 flex justify-center z-50 relative">
+        <header className="w-full max-w-7xl px-4 sm:px-6 py-3 flex items-center bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-full gap-4">
+          <Navigation />
+          <Button asChild variant="ghost" size="sm" className="rounded-full text-white hover:bg-white/10 hover:text-white hidden sm:flex h-10 px-4">
+            <Link href="/app">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Link>
+          </Button>
+          <div className="font-medium">Start a new case</div>
+        </header>
+      </div>
 
       <main className="flex-1 flex flex-col items-center justify-center p-6 z-10">
         <motion.div 

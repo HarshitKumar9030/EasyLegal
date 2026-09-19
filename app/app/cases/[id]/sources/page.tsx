@@ -71,25 +71,27 @@ export default function LegalSources() {
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-black text-white">
       <ShaderBackground />
       
-      <header className="px-6 py-4 flex items-center justify-between border-b border-white/10 bg-white/5 backdrop-blur-2xl z-10">
-        <div className="flex items-center gap-4">
-          <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
-          <Button asChild variant="ghost" size="sm" className="rounded-xl text-white hover:bg-white/10 hover:text-white hidden sm:flex">
-            <Link href={`/app/cases/${params.id}`}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Case
+      <div className="pt-6 px-4 sm:px-6 flex justify-center z-50 relative">
+        <header className="w-full max-w-7xl px-4 sm:px-6 py-3 flex items-center justify-between bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-full">
+          <div className="flex items-center gap-4">
+            <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
+            <Button asChild variant="ghost" size="sm" className="rounded-full text-white hover:bg-white/10 hover:text-white hidden sm:flex h-10 px-4">
+              <Link href={`/app/cases/${params.id}`}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Case
+              </Link>
+            </Button>
+            <div className="font-medium">Legal Sources</div>
+          </div>
+          <Button asChild size="sm" className="bg-white text-black hover:bg-slate-200 rounded-full h-10 px-4">
+            <Link href={`/app/cases/${params.id}/escalation`}>
+              <span className="hidden sm:inline">Next: Escalation</span>
+              <span className="sm:hidden">Next</span>
+              <ArrowRight className="w-4 h-4 sm:ml-2" />
             </Link>
           </Button>
-          <div className="font-medium">Legal Sources</div>
-        </div>
-        <Button asChild size="sm" className="bg-white text-black hover:bg-slate-200 rounded-xl">
-          <Link href={`/app/cases/${params.id}/escalation`}>
-            <span className="hidden sm:inline">Next: Escalation</span>
-            <span className="sm:hidden">Next</span>
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Link>
-        </Button>
-      </header>
+        </header>
+      </div>
 
       <main className="flex-1 p-6 max-w-5xl mx-auto w-full z-10">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">

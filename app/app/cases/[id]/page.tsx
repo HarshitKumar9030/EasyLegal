@@ -87,31 +87,33 @@ export default function CaseOverview() {
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-black text-white">
       <ShaderBackground />
       
-      <header className="px-6 py-4 flex items-center justify-between bg-white/5 backdrop-blur-2xl border-b border-white/10 z-10">
-        <div className="flex items-center gap-4">
-          <Button asChild variant="ghost" size="sm" className="rounded-xl text-white hover:bg-white/10 hover:text-white hidden sm:flex">
-            <Link href="/app">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Link>
-          </Button>
-          <div className="font-medium text-sm text-slate-400">
-            {caseData.category.toUpperCase()}
+      <div className="pt-6 px-4 sm:px-6 flex justify-center z-50 relative">
+        <header className="w-full max-w-7xl px-4 sm:px-6 py-3 flex items-center justify-between bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-full">
+          <div className="flex items-center gap-4">
+            <Button asChild variant="ghost" size="sm" className="rounded-full text-white hover:bg-white/10 hover:text-white hidden sm:flex h-10 px-4">
+              <Link href="/app">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </Link>
+            </Button>
+            <div className="font-medium text-sm text-slate-400">
+              {caseData.category.toUpperCase()}
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300"
-          >
-            {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-          </Button>
-          <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
-        </div>
-      </header>
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="rounded-full text-red-400 hover:bg-red-500/10 hover:text-red-300 h-10 w-10 p-0 flex items-center justify-center"
+            >
+              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+            </Button>
+            <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
+          </div>
+        </header>
+      </div>
 
       <main className="flex-1 p-6 max-w-5xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-8 z-10">
         <div className="lg:col-span-2 space-y-8">

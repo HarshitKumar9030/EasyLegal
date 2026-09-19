@@ -137,29 +137,31 @@ export default function DocumentEditor() {
     <div className="h-[100dvh] flex flex-col relative overflow-hidden bg-black text-white print:h-auto print:overflow-visible">
       <ShaderBackground />
       
-      <header className="px-6 py-4 flex items-center justify-between border-b border-white/10 bg-white/5 backdrop-blur-2xl z-10 shrink-0">
-        <div className="flex items-center gap-4">
-          <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
-          <Button asChild variant="ghost" size="sm" className="rounded-xl text-white hover:bg-white/10 hover:text-white hidden sm:flex">
-            <Link href={`/app/cases/${params.id}/escalation`}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Link>
-          </Button>
-          <div className="font-medium">Review Document</div>
-        </div>
-        <div className="flex items-center gap-2 print:hidden">
-          <Button variant="outline" size="sm" onClick={handleCopy} className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white rounded-xl">
-            {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-            <span className="hidden sm:inline">Copy</span>
-          </Button>
-          <Button size="sm" onClick={handlePrint} className="bg-white text-black hover:bg-slate-200 rounded-xl">
-            <Download className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">Export PDF</span>
-            <span className="sm:hidden">PDF</span>
-          </Button>
-        </div>
-      </header>
+      <div className="pt-6 px-4 sm:px-6 flex justify-center z-50 relative shrink-0 print:hidden">
+        <header className="w-full max-w-7xl px-4 sm:px-6 py-3 flex items-center justify-between bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-full">
+          <div className="flex items-center gap-4">
+            <Navigation caseId={params.id as string} caseStatus={caseData?.status} />
+            <Button asChild variant="ghost" size="sm" className="rounded-full text-white hover:bg-white/10 hover:text-white hidden sm:flex h-10 px-4">
+              <Link href={`/app/cases/${params.id}/escalation`}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </Link>
+            </Button>
+            <div className="font-medium">Review Document</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={handleCopy} className="bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white rounded-full h-10 px-4">
+              {copied ? <Check className="w-4 h-4 sm:mr-2" /> : <Copy className="w-4 h-4 sm:mr-2" />}
+              <span className="hidden sm:inline">Copy</span>
+            </Button>
+            <Button size="sm" onClick={handlePrint} className="bg-white text-black hover:bg-slate-200 rounded-full h-10 px-4">
+              <Download className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Export PDF</span>
+              <span className="sm:hidden">PDF</span>
+            </Button>
+          </div>
+        </header>
+      </div>
 
       <main className="flex-1 flex flex-col w-full z-0 relative overflow-hidden print:overflow-visible">
         <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-32 print:p-0 print:overflow-visible">

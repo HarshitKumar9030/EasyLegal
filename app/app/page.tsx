@@ -74,24 +74,29 @@ export default function Dashboard() {
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-black text-white">
       <ShaderBackground />
       
-      <header className="px-6 py-4 flex items-center justify-between bg-white/5 backdrop-blur-2xl border-b border-white/10 z-10">
-        <div className="flex items-center gap-4">
-          <div className="font-bold text-xl tracking-tight">
-            <Link href="/">EasyLegal</Link>
+      <div className="pt-6 px-4 sm:px-6 flex justify-center z-50 relative">
+        <header className="w-full max-w-7xl px-4 sm:px-6 py-3 flex items-center justify-between bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-full">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-white/10 rounded-full hidden sm:block">
+              <Scale className="w-5 h-5 text-white" />
+            </div>
+            <div className="font-bold text-xl tracking-tight">
+              <Link href="/">EasyLegal</Link>
+            </div>
           </div>
-        </div>
-        <nav className="flex items-center gap-4">
-          <Button asChild variant="default" size="sm" className="bg-white text-black hover:bg-slate-200 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all hover:shadow-[0_0_30px_rgba(255,255,255,0.4)]">
-            <Link href="/app/cases/new">
-              <Plus className="w-4 h-4 mr-2" />
-              New Case
-            </Link>
-          </Button>
-          <div className="z-20">
-            <Navigation />
-          </div>
-        </nav>
-      </header>
+          <nav className="flex items-center gap-3 sm:gap-4">
+            <Button asChild variant="default" size="sm" className="bg-white text-black hover:bg-slate-200 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] h-10 px-4 sm:px-5">
+              <Link href="/app/cases/new">
+                <Plus className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">New Case</span>
+              </Link>
+            </Button>
+            <div className="z-20">
+              <Navigation />
+            </div>
+          </nav>
+        </header>
+      </div>
 
       <main className="flex-1 p-6 md:p-12 max-w-7xl mx-auto w-full z-10">
         <motion.div 
