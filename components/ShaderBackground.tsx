@@ -47,23 +47,37 @@ const fragmentShaderSource = `
     vec2 st = gl_FragCoord.xy / u_resolution.xy;
     st.x *= u_resolution.x / u_resolution.y;
 
-    // Create a slow, elegant noise pattern
-    float n = snoise(st * 1.5 + u_time * 0.05);
-    n += 0.5 * snoise(st * 3.0 - u_time * 0.08);
+    // Create a very slow, deliberate, structured noise pattern
+    vec2 q = vec2(0.);
+    q.x = snoise(st * 0.5 + 0.02 * u_time);
+    q.y = snoise(st * 0.5 + vec2(1.0));
+
+    vec2 r = vec2(0.);
+    r.x = snoise(st * 0.5 + 1.0 * q + vec2(1.7,9.2) + 0.015 * u_time);
+    r.y = snoise(st * 0.5 + 1.0 * q + vec2(8.3,2.8) + 0.012 * u_time);
+
+    float f = snoise(st + r);
+
+    // Professional, authoritative "legal" colors
+    vec3 color1 = vec3(0.02, 0.04, 0.08); // Very deep navy/black
+    vec3 color2 = vec3(0.08, 0.12, 0.22); // Slate navy
+    vec3 color3 = vec3(0.15, 0.20, 0.30); // Lighter slate
+    vec3 color4 = vec3(0.55, 0.45, 0.30); // Subtle muted gold/bronze accent
+
+    // Mix colors smoothly for a premium, structured feel
+    vec3 color = mix(color1, color2, clamp((f*f)*3.0, 0.0, 1.0));
+    color = mix(color, color3, clamp(length(q) * 0.5, 0.0, 1.0));
     
-    // Posterize the noise to create solid bands of color (no gradients)
-    float bands = floor(n * 5.0) / 5.0;
-    
-    // Professional but vibrant colors for the glassmorphism to pop against
-    vec3 color1 = vec3(0.02, 0.02, 0.05); // Very dark base
-    vec3 color2 = vec3(0.1, 0.25, 0.5);   // Deep blue
-    vec3 color3 = vec3(0.3, 0.15, 0.4);   // Deep purple
-    vec3 color4 = vec3(0.05, 0.4, 0.3);   // Deep teal
-    
-    vec3 color = color1;
-    if (bands > -0.2) color = color2;
-    if (bands > 0.2) color = color3;
-    if (bands > 0.6) color = color4;
+    // Add the gold accent very sparingly, only in the highlights
+    float highlight = smoothstep(0.6, 1.0, f);
+    color = mix(color, color4, highlight * 0.15);
+
+    // Add a subtle vignette for focus
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    uv *=  1.0 - uv.yx;
+    float vig = uv.x*uv.y * 15.0;
+    vig = pow(vig, 0.35);
+    color *= vig;
 
     gl_FragColor = vec4(color, 1.0);
   }
@@ -165,7 +179,7 @@ export function ShaderBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 -z-10 h-full w-full object-cover"
+      className="fixed inset-0 z-0 h-full w-full object-cover"
       style={{ pointerEvents: "none" }}
     />
   );

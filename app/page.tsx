@@ -47,7 +47,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-x-clip bg-black">
+    <div className="min-h-screen flex flex-col relative overflow-x-clip">
       <ShaderBackground />
       
       <div className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
@@ -67,7 +67,7 @@ export default function Home() {
         </header>
       </div>
 
-      <main className="flex-1 flex flex-col z-10 w-full">
+      <main className="flex-1 flex flex-col z-10 relative w-full">
         {/* Hero Section */}
         <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-32 pb-24 text-center">
           <div className="max-w-5xl w-full space-y-6 sm:space-y-8 bg-white/5 backdrop-blur-3xl p-6 sm:p-12 md:p-20 rounded-4xl sm:rounded-[3rem] border border-white/10 shadow-2xl">
@@ -77,7 +77,7 @@ export default function Home() {
             </h1>
             
             <p ref={subtitleRef} className="text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto text-balance font-light leading-relaxed">
-              EasyLegal helps turn confusing everyday legal problems into structured, source-backed next steps. You don&apos;t need to know the legal terminology. Explain what happened in your own words.
+              Your AI-powered legal workspace for understanding cases, researching law, and taking action. You don&apos;t need to know the legal terminology. Explain what happened in your own words.
             </p>
 
             <div ref={ctaRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
